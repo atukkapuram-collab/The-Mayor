@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Mayor</title>
+  <meta name="description" content="A turn-based city economics strategy game. Run your city for 10 years.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b8cff'/%3E%3Cpath d='M7 25V14h5v11M13.5 25V8h5v17M20 25v-8h5v8' fill='white'/%3E%3C/svg%3E">
+</head>
+<body>
+  <!-- ===== Title screen ===== -->
+  <section id="title-screen" class="screen title-screen">
+    <div class="title-sky" aria-hidden="true"><svg id="skyline" class="skyline" preserveAspectRatio="none"></svg></div>
+    <div class="title-content">
+      <div class="brand brand--large">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 25V14h5v11M13.5 25V8h5v17M20 25v-8h5v8" /></svg></span>
+        <h1>The Mayor</h1>
+      </div>
+      <p class="tagline">Ten years. One city. Every decision counts.</p>
+
+      <div class="title-cards">
+        <div id="continue-card" class="card title-card" hidden>
+          <p class="eyebrow">Saved game</p>
+          <h2 id="continue-city">—</h2>
+          <p id="continue-detail" class="muted">—</p>
+          <button id="continue-btn" class="btn btn--primary btn--block">Continue term</button>
+        </div>
+
+        <form id="new-game-form" class="card title-card" autocomplete="off">
+          <p class="eyebrow">New game</p>
+          <label class="field">
+            <span>Name your city</span>
+            <input id="city-name" type="text" maxlength="40" placeholder="New Haven" required>
+          </label>
+          <button type="submit" class="btn btn--accent btn--block">Take office</button>
+          <p class="hint">Your progress saves automatically in this browser.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Game screen ===== -->
+  <section id="game-screen" class="screen game-screen" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 25V14h5v11M13.5 25V8h5v17M20 25v-8h5v8" /></svg></span>
+        <div>
+          <div id="city-title" class="city-title">—</div>
+          <div class="date-line"><span id="date-label">—</span> <span class="dot-sep">•</span> <span id="turns-left">—</span></div>
+        </div>
+      </div>
+      <div class="term-progress" aria-hidden="true"><div id="term-progress-fill"></div></div>
+      <div class="topbar-actions">
+        <span id="rating-chip" class="chip" title="Credit rating: decides the interest you pay on debt">AAA</span>
+        <button id="theme-btn" class="icon-btn" aria-label="Toggle light or dark theme" title="Toggle theme">
+          <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
+        </button>
+        <button id="menu-btn" class="icon-btn" aria-label="Main menu" title="Main menu">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <button id="end-turn-btn" class="btn btn--accent end-turn">
+          End Quarter <kbd>Space</kbd>
+        </button>
+      </div>
+    </header>
+
+    <section id="kpis" class="kpis" aria-label="City statistics"></section>
+
+    <div class="main-grid">
+      <main class="panel main-panel">
+        <nav class="tabs" role="tablist">
+          <button class="tab is-active" role="tab" data-tab="overview">Overview</button>
+          <button class="tab" role="tab" data-tab="budget">Budget</button>
+          <button class="tab" role="tab" data-tab="projects">Projects</button>
+          <button class="tab" role="tab" data-tab="reports">Reports</button>
+        </nav>
+
+        <div class="tab-panel is-active" id="tab-overview" role="tabpanel">
+          <div class="overview-grid">
+            <div class="card advisor">
+              <h3 class="card-title">Advisor</h3>
+              <ul id="advisor-list" class="advisor-list"></ul>
+            </div>
+            <div class="card">
+              <h3 class="card-title">City services <span class="info" title="Quality 0–100. It moves slowly toward what your budget pays for.">?</span></h3>
+              <div id="services-list" class="services"></div>
+            </div>
+            <div class="card chart-card">
+              <h3 class="card-title">Economy</h3>
+              <div class="chart-box"><canvas id="chart-economy"></canvas></div>
+            </div>
+            <div class="card chart-card span-all">
+              <h3 class="card-title">Wellbeing</h3>
+              <div class="chart-box"><canvas id="chart-wellbeing"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-budget" role="tabpanel">
+          <div class="budget-grid">
+            <div class="budget-controls">
+              <div class="card">
+                <h3 class="card-title">Taxes</h3>
+                <div id="tax-sliders"></div>
+              </div>
+              <div class="card">
+                <h3 class="card-title">Spending per quarter</h3>
+                <div id="spend-sliders"></div>
+              </div>
+            </div>
+            <aside class="card budget-summary" id="budget-summary"></aside>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-projects" role="tabpanel">
+          <p class="muted tab-intro">Big investments are paid up front, take a few quarters to build, and give lasting benefits once open. Each can be built once.</p>
+          <div id="projects-grid" class="projects-grid"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-reports" role="tabpanel">
+          <div class="reports-grid">
+            <div class="card chart-card">
+              <h3 class="card-title">Revenue vs. spending</h3>
+              <div class="chart-box"><canvas id="chart-budget"></canvas></div>
+            </div>
+            <div class="card chart-card">
+              <h3 class="card-title">Treasury and debt</h3>
+              <div class="chart-box"><canvas id="chart-finance"></canvas></div>
+            </div>
+            <div class="card ledger-card">
+              <h3 class="card-title">Quarterly ledger</h3>
+              <div class="table-wrap"><table id="ledger" class="ledger"></table></div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <aside class="panel news-panel" aria-label="City news">
+        <h2 class="news-heading">City News</h2>
+        <ol id="news-list" class="news-list"></ol>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===== Final report ===== -->
+  <section id="final-screen" class="screen final-screen" hidden></section>
+
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+
+  <!-- Charts library (optional: the game still works without it) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- Game engine (no page code) -->
+  <script src="js/config.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/random.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/economy.js"></script>
+  <script src="js/projects.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/game.js"></script>
+
+  <!-- Interface -->
+  <script src="js/ui/dashboard.js"></script>
+  <script src="js/ui/budget.js"></script>
+  <script src="js/ui/projectsView.js"></script>
+  <script src="js/ui/charts.js"></script>
+  <script src="js/ui/news.js"></script>
+  <script src="js/ui/modals.js"></script>
+  <script src="js/ui/finalReport.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

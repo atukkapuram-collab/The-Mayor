@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Mayor: balance simulator</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0a0f1d; color: #e9edf7; max-width: 960px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 1.4rem; }
+    p { color: #8d97b0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; font-variant-numeric: tabular-nums; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid #ffffff14; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    th { color: #8d97b0; font-size: 0.8rem; text-transform: uppercase; }
+    button { padding: 8px 16px; border-radius: 8px; border: none; background: #5b8cff; color: white; font-weight: 600; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Balance simulator</h1>
+  <p>Plays many full games with scripted strategies (see <code>tests/strategies.js</code>). A good balance: sensible play scores A–B, doing nothing scores around C, and extreme strategies lose.</p>
+  <label>Games per strategy <input id="games" type="number" value="200" min="10" max="2000"></label>
+  <button id="run">Run</button>
+  <table id="out"></table>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/util.js"></script>
+  <script src="../js/random.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/economy.js"></script>
+  <script src="../js/projects.js"></script>
+  <script src="../js/events.js"></script>
+  <script src="../js/scoring.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/game.js"></script>
+  <script src="strategies.js"></script>
+  <script>
+    function play(strategy, seed) {
+      let s = Mayor.state.createNewGame('Sim', seed);
+      strategy.setup(s);
+      while (s.status === 'playing') {
+        if (strategy.eachTurn) strategy.eachTurn(s);
+        s = Mayor.game.endTurn(s);
+        if (s.pendingEvent) Mayor.events.resolveChoice(s, 0);
+      }
+      return s;
+    }
+
+    function run() {
+      const n = Number(document.getElementById('games').value) || 200;
+      const rows = Mayor.strategies.map((strategy) => {
+        const scores = [];
+        let lost = 0, turns = 0, happy = 0;
+        for (let i = 0; i < n; i++) {
+          const s = play(strategy, i + 1);
+          scores.push(Mayor.scoring.calculate(s).total);
+          if (s.status === 'lost') lost++;
+          turns += s.turn;
+          happy += s.happiness;
+        }
+        scores.sort((a, b) => a - b);
+        const avg = scores.reduce((a, b) => a + b, 0) / n;
+        const grade = Mayor.config.score.grades.find((g) => avg >= g.min).grade;
+        return `<tr><td>${strategy.name}</td><td>${avg.toFixed(0)} (${grade})</td><td>${scores[0]}</td><td>${scores[Math.floor(n / 2)]}</td><td>${scores[n - 1]}</td><td>${((lost / n) * 100).toFixed(0)}%</td><td>${(turns / n).toFixed(1)}</td><td>${(happy / n).toFixed(0)}</td></tr>`;
+      });
+      document.getElementById('out').innerHTML =
+        '<tr><th>Strategy</th><th>Avg score</th><th>Min</th><th>Median</th><th>Max</th><th>Lost</th><th>Avg turns</th><th>End happiness</th></tr>' + rows.join('');
+    }
+
+    document.getElementById('run').addEventListener('click', run);
+    run();
+  </script>
+</body>
+</html>

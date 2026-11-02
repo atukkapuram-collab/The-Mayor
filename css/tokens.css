@@ -1,0 +1,85 @@
+/* tokens.css — design tokens. Change colors and spacing here. */
+:root,
+:root[data-theme="dark"] {
+  --bg: #0a0f1d;
+  --bg-glow-1: rgba(91, 140, 255, 0.16);
+  --bg-glow-2: rgba(124, 92, 255, 0.10);
+  --grid-line: rgba(255, 255, 255, 0.025);
+  --surface: rgba(20, 28, 48, 0.72);
+  --surface-solid: #131b2f;
+  --surface-2: rgba(255, 255, 255, 0.04);
+  --surface-3: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text: #e9edf7;
+  --text-muted: #8d97b0;
+  --text-faint: #5d6782;
+  --accent: #5b8cff;
+  --accent-2: #8b6cff;
+  --accent-soft: rgba(91, 140, 255, 0.14);
+  --on-accent: #ffffff;
+  --good: #34d399;
+  --good-soft: rgba(52, 211, 153, 0.14);
+  --bad: #f87171;
+  --bad-soft: rgba(248, 113, 113, 0.14);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.14);
+  --event: #c084fc;
+  --event-soft: rgba(192, 132, 252, 0.14);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --skyline-1: #18213a;
+  --skyline-2: #10172a;
+  --window: rgba(255, 214, 120, 0.7);
+
+  /* Chart series */
+  --series-1: #5b8cff;
+  --series-2: #34d399;
+  --series-3: #fbbf24;
+  --series-4: #f87171;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #eef2f9;
+  --bg-glow-1: rgba(91, 140, 255, 0.18);
+  --bg-glow-2: rgba(139, 108, 255, 0.10);
+  --grid-line: rgba(20, 30, 60, 0.035);
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-solid: #ffffff;
+  --surface-2: rgba(20, 30, 60, 0.04);
+  --surface-3: rgba(20, 30, 60, 0.08);
+  --border: rgba(20, 30, 60, 0.09);
+  --border-strong: rgba(20, 30, 60, 0.18);
+  --text: #141b2d;
+  --text-muted: #5b6680;
+  --text-faint: #8d97ad;
+  --accent: #3b6ef5;
+  --accent-2: #7152f0;
+  --accent-soft: rgba(59, 110, 245, 0.12);
+  --good: #059669;
+  --good-soft: rgba(5, 150, 105, 0.12);
+  --bad: #dc2626;
+  --bad-soft: rgba(220, 38, 38, 0.10);
+  --warn: #d97706;
+  --warn-soft: rgba(217, 119, 6, 0.12);
+  --event: #9333ea;
+  --event-soft: rgba(147, 51, 234, 0.10);
+  --shadow: 0 10px 30px rgba(30, 40, 80, 0.10);
+  --shadow-lg: 0 24px 60px rgba(30, 40, 80, 0.18);
+  --skyline-1: #cdd6ea;
+  --skyline-2: #dde4f2;
+  --window: rgba(255, 255, 255, 0.9);
+  --series-1: #3b6ef5;
+  --series-2: #059669;
+  --series-3: #d97706;
+  --series-4: #dc2626;
+  color-scheme: light;
+}

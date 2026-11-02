@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Mayor: engine tests</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0a0f1d; color: #e9edf7; max-width: 760px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 1.4rem; }
+    li { padding: 6px 0; border-bottom: 1px solid #ffffff14; list-style: none; }
+    .ok::before { content: '✓ '; color: #34d399; font-weight: 700; }
+    .fail::before { content: '✗ '; color: #f87171; font-weight: 700; }
+    .err { color: #f87171; font-size: 0.85rem; margin-left: 20px; }
+    #summary { font-weight: 700; margin: 16px 0; }
+    ul { padding: 0; }
+  </style>
+</head>
+<body>
+  <h1>The Mayor: engine tests</h1>
+  <div id="summary">Running…</div>
+  <ul id="results"></ul>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/util.js"></script>
+  <script src="../js/random.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/economy.js"></script>
+  <script src="../js/projects.js"></script>
+  <script src="../js/events.js"></script>
+  <script src="../js/scoring.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/game.js"></script>
+  <script src="tests.js"></script>
+  <script>
+    const results = Mayor.runTests();
+    const passed = results.filter((r) => r.ok).length;
+    document.getElementById('summary').textContent = `${passed} of ${results.length} tests passed`;
+    document.getElementById('summary').style.color = passed === results.length ? '#34d399' : '#f87171';
+    document.getElementById('results').innerHTML = results.map((r) =>
+      `<li class="${r.ok ? 'ok' : 'fail'}">${r.name}${r.ok ? '' : `<div class="err">${r.error}</div>`}</li>`).join('');
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Local Claude Code preview config (machine-specific paths)
+.claude/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+*.log
